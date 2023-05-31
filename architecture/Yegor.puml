@@ -1,0 +1,23 @@
+@startuml
+skinparam componentStyle uml2
+component Shop_service
+database Products
+database Clients
+component Smart_turnstiles_with_RFID
+component Axapta
+component GoldApple_service
+component Mobile_app
+actor Client
+component Shop_system
+
+Smart_turnstiles_with_RFID -right-> Shop_service: Информация о клиенте, [id, наименование_товара(Опицонально)]
+Shop_service --down-> GoldApple_service: Данные чека, верификация пользователя по id
+Shop_service -> Clients: Хранение данных о клиенте и товарах
+Shop_service -up-> Products: Хранение всего перечня товаров
+GoldApple_service -> Axapta
+Shop_system-down-> Shop_service
+Shop_system -down-> Smart_turnstiles_with_RFID
+Mobile_app -up-> Smart_turnstiles_with_RFID: Передает информацию о клиенте [id]
+Client -left-> Mobile_app: Авторизация, идентификация [номер телефона, пароль]
+
+@enduml

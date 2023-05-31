@@ -1,0 +1,25 @@
+@startuml
+skinparam componentStyle uml2
+actor Клиент as Client
+component Auth_service
+component Async_api
+component UGC_service
+database Elasticsearch
+database PostgreSQL
+database RedisCache
+database RedisToken
+database Kafka
+database ClickHouse
+component ETL
+
+Client -right-> Auth_service: Авторизация, Аутентификация
+Client -down-> Async_api: Поиск фильмов
+Client -left-> UGC_service: Наполнение контентом
+Auth_service -up-> RedisToken: Хранение невалидных токенов
+Auth_service -> PostgreSQL: Хранение Пользователей, Ролей
+Async_api -right-> RedisCache: Кеширование поисковых данных
+UGC_service -left-> Kafka: Событие - история просмотра фильма
+Elasticsearch <- Async_api
+ETL -> ClickHouse
+ETL --> Kafka
+@enduml
