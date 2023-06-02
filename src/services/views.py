@@ -4,11 +4,22 @@ from fastapi import Depends
 from db.redis import get_redis
 from db.kafka import get_producer
 from aiokafka import AIOKafkaProducer
-from storage import Storage, RedisCache, KafkaStorage
+from core.config import settings
+from .storage import Storage, RedisCache, KafkaStorage
 
 
 class ViewsService(Storage):
-    pass
+    async def set_data_key(
+            self,
+            key: bytes,
+            value: bytes,
+    ) -> None:
+
+        await self.set_data(
+            key=key,
+            value=value,
+            topic=settings.TOPIC
+        )
 
 
 @lru_cache()

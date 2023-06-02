@@ -11,4 +11,4 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-CMD ["python", "./kafka_test.py"]
+CMD ["python", "main.py"]

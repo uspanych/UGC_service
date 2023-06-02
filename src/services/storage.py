@@ -46,8 +46,8 @@ class KafkaStorage(AbstractStorage):
                 key=kwargs.get('key'),
                 value=kwargs.get('value'),
             )
-        finally:
-            await self.producer.stop()
+        except:
+            pass
 
 
 class Storage:

@@ -1,4 +1,4 @@
-from aiokafka import AIOKafkaProducer
+from aiokafka import AIOKafkaProducer, AIOKafkaConsumer
 
 producer: AIOKafkaProducer | None
 
