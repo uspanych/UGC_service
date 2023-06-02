@@ -9,8 +9,8 @@ from redis import Redis
 def etl():
     loader = RedisLoader(
         consumer=KafkaConsumer(
-            settings.TOPIC_LIST,
-            bootstrap_server=settings.KAFKA_BOOTSTRAP_SERVER,
+            settings.TOPIC,
+            bootstrap_servers=settings.KAFKA_BOOTSTRAP_SERVER,
             group_id=settings.GROUP_ID,
         ),
         redis=Redis(
