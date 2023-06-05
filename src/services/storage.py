@@ -1,5 +1,4 @@
 from redis import Redis
-import json
 import abc
 from aiokafka import AIOKafkaProducer
 
@@ -22,7 +21,7 @@ class RedisCache(AbstractCache):
         if not data:
             return None
 
-        return json.loads(data)
+        return data
 
 
 class AbstractStorage(abc.ABC):
@@ -64,7 +63,16 @@ class Storage:
             topic: str,
             key: bytes,
             value: bytes,
-    ):
+    ) -> None:
+        """Функция записывает данные в хранидище.
+
+        Args:
+            topic (str): Название топика.
+            key (bytes): Ключ записи.
+            value (bytes): Значение записи.
+
+
+        """
         await self.receiver.set_data(
             topic=topic,
             key=key,
@@ -74,7 +82,17 @@ class Storage:
     async def get_data(
             self,
             key: str,
-    ):
+    ) -> str:
+        """Функция получает данные из хранилища по ключу.
+
+        Args:
+            key (str): Ключ записи в хранилище.
+
+        Returns:
+            str: Значение записи по ключу.
+
+
+        """
         response = await self.sender.get_by_id(
             key=key,
         )

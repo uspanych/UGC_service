@@ -16,10 +16,11 @@ app = FastAPI(
 
 
 @app.on_event('startup')
-async def startup():
+async def startup() -> None:
     redis.redis = Redis(
         host=settings.REDIS_HOST,
-        port=settings.REDIS_PORT
+        port=settings.REDIS_PORT,
+        decode_responses=True,
     )
 
     kafka.producer = AIOKafkaProducer(
@@ -30,7 +31,7 @@ async def startup():
 
 
 @app.on_event("shutdown")
-async def shutdown():
+async def shutdown() -> None:
     await redis.redis.close()
     await kafka.producer.stop()
 

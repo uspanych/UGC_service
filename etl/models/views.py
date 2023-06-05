@@ -2,11 +2,5 @@ from models.base import BaseOrjsonModel
 
 
 class ViewModel(BaseOrjsonModel):
-    key: bytes
-    value: bytes
-
-
-class ViewResponseModel(BaseOrjsonModel):
+    key: str
     value: str
-
-
