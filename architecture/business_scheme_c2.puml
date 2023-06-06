@@ -23,3 +23,4 @@ Elasticsearch <- Async_api
 ETL -> ClickHouse
 ETL --> Kafka
 @enduml
+
