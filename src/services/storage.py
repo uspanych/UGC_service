@@ -1,6 +1,7 @@
-from redis import Redis
 import abc
+
 from aiokafka import AIOKafkaProducer
+from redis import Redis
 
 
 class AbstractCache(abc.ABC):

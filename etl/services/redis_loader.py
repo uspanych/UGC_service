@@ -1,8 +1,8 @@
 from kafka import KafkaConsumer
 from redis import Redis
-from models.views import ViewModel
-from typing import List
+
 from core.config import settings
+from models.views import ViewModel
 
 
 class RedisLoader:
@@ -11,7 +11,6 @@ class RedisLoader:
     Класс предназначен для загрузки данных из Kafka в Redis
 
     """
-
     def __init__(
             self,
             consumer: KafkaConsumer,
@@ -32,7 +31,6 @@ class RedisLoader:
             list: Список с моедлями view.
 
         """
-
         batch = []
         for message in self.consumer:
             key, value = message.key, message.value
@@ -47,7 +45,7 @@ class RedisLoader:
 
         self._set_data_redis(batch)
 
-    def _set_data_redis(self, batch: List[ViewModel]) -> None:
+    def _set_data_redis(self, batch: list[ViewModel]) -> None:
 
         for item in batch:
             self.redis.set(
