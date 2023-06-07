@@ -1,8 +1,11 @@
 from http import HTTPStatus
 
 from fastapi import APIRouter, Depends, Body
-from services.views import get_views_service, ViewsService
+from fastapi_jwt_auth import AuthJWT
+
 from models.views import ViewModel, ViewResponseModel
+from services.utils.token_verify import role_required
+from services.views import get_views_service, ViewsService
 
 router = APIRouter()
 
@@ -13,8 +16,11 @@ router = APIRouter()
 )
 async def views_set_time(
         views_service: ViewsService = Depends(get_views_service),
-        views: ViewModel = Body(...)
+        views: ViewModel = Body(...),
+        Authorize: AuthJWT = Depends(),
 ) -> int:
+
+    role_required(Authorize, ["User", "SuperUser", "Admin"])
 
     try:
         await views_service.set_data_key(
@@ -37,7 +43,10 @@ async def views_set_time(
 async def views_get_time(
         key: str,
         views_service: ViewsService = Depends(get_views_service),
+        Authorize: AuthJWT = Depends(),
 ) -> ViewResponseModel:
+
+    role_required(Authorize, ["SuperUser", "Admin", "User"])
 
     response = await views_service.get_data_key(key)
 
