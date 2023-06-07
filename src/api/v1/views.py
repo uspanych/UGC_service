@@ -1,8 +1,9 @@
 from http import HTTPStatus
 
-from fastapi import APIRouter, Depends, Body
-from services.views import get_views_service, ViewsService
+from fastapi import APIRouter, Body, Depends
+
 from models.views import ViewModel, ViewResponseModel
+from services.views import ViewsService, get_views_service
 
 router = APIRouter()
 

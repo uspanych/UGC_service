@@ -8,5 +8,3 @@ class ViewModel(BaseOrjsonModel):
 
 class ViewResponseModel(BaseOrjsonModel):
     value: str
-
-
