@@ -1,11 +1,11 @@
-from db import redis
-from db import kafka
-from fastapi import FastAPI
-from core.config import settings
-from redis.asyncio import Redis
 from aiokafka import AIOKafkaProducer
+from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
+from redis.asyncio import Redis
+
 from api.v1 import views
+from core.config import settings
+from db import kafka, redis
 
 app = FastAPI(
     title=settings.PROJECT_NAME,

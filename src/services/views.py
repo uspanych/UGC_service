@@ -1,13 +1,15 @@
 from functools import lru_cache
-from redis import Redis
-from fastapi import Depends
-from db.redis import get_redis
-from db.kafka import get_producer
+
 from aiokafka import AIOKafkaProducer
+from fastapi import Depends
+from redis import Redis
+
 from core.config import settings
+from db.kafka import get_producer
+from db.redis import get_redis
 from models.views import ViewResponseModel
 
-from .storage import Storage, RedisCache, KafkaStorage
+from .storage import KafkaStorage, RedisCache, Storage
 
 
 class ViewsService(Storage):

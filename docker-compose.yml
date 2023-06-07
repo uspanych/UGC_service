@@ -155,6 +155,61 @@ services:
       timeout: 10s
       retries: 10
 
+  clickhouse-node1:
+    image: yandex/clickhouse-server:20.4
+    container_name: clickhouse-node1
+    hostname: clickhouse-node1
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    volumes:
+      - ./cluster_configs/node1:/etc/clickhouse-server
+    networks:
+      - backend
+    depends_on:
+      - zookeeper-1
+      - zookeeper-2
+      - zookeeper-3
+
+  clickhouse-node2:
+    image: yandex/clickhouse-server:20.4
+    container_name: clickhouse-node2
+    hostname: clickhouse-node2
+    networks:
+      - backend
+    volumes:
+      - ./cluster_configs/node2:/etc/clickhouse-server
+    depends_on:
+      - zookeeper-1
+      - zookeeper-2
+      - zookeeper-3
+
+  clickhouse-node3:
+    image: yandex/clickhouse-server:20.4
+    container_name: clickhouse-node3
+    hostname: clickhouse-node3
+    networks:
+      - backend
+    volumes:
+      - ./cluster_configs/node3:/etc/clickhouse-server
+    depends_on:
+      - zookeeper-1
+      - zookeeper-2
+      - zookeeper-3
+
+  clickhouse-node4:
+    image: yandex/clickhouse-server:20.4
+    container_name: clickhouse-node4
+    hostname: clickhouse-node4
+    networks:
+      - backend
+    volumes:
+      - ./cluster_configs/node4:/etc/clickhouse-server
+    depends_on:
+      - zookeeper-1
+      - zookeeper-2
+      - zookeeper-3
+
 networks:
   backend:
     name: backend
