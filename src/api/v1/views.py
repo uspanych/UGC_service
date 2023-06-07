@@ -1,18 +1,11 @@
 from http import HTTPStatus
 
-<<<<<<< HEAD
-from fastapi import APIRouter, Depends, Body
+from fastapi import APIRouter, Body, Depends
 from fastapi_jwt_auth import AuthJWT
 
 from models.views import ViewModel, ViewResponseModel
 from services.utils.token_verify import role_required
-from services.views import get_views_service, ViewsService
-=======
-from fastapi import APIRouter, Body, Depends
-
-from models.views import ViewModel, ViewResponseModel
 from services.views import ViewsService, get_views_service
->>>>>>> d2d1889d4c06049011d91f4657176f3f5a46e185
 
 router = APIRouter()
 
