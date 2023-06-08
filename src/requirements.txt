@@ -7,9 +7,5 @@ gunicorn==20.1.0
 uvloop==0.17.0 ; sys_platform != "win32" and implementation_name == "cpython"
 orjson==3.8.7
 httptools==0.5.0
-<<<<<<< HEAD
 fastapi-jwt-auth[asymmetric]==0.5.0
-
-=======
 clickhouse-driver==0.2.6
->>>>>>> d2d1889d4c06049011d91f4657176f3f5a46e185

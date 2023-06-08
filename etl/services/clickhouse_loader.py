@@ -1,8 +1,8 @@
-from kafka import KafkaConsumer
 from clickhouse_driver import Client
+from kafka import KafkaConsumer
 
-from core.config import settings
 from models.views import ClickHouseModel
+from services.backoff import backoff
 
 
 class ClickHouseLoader:
@@ -20,7 +20,8 @@ class ClickHouseLoader:
         self.consumer = consumer
         self.clickhouse = clickhouse
 
-    def get_kafka_data(self, batch_size: int = 1) -> None:
+    @backoff()
+    def get_kafka_data(self, batch_size: int = 1000) -> None:
         cash = []
         for message in self.consumer:
             user_id, movie_id = message.key.decode().split("+")
@@ -34,9 +35,9 @@ class ClickHouseLoader:
         if cash:
             self._set_data_in_clickhouse(cash)
 
+    @backoff()
     def _set_data_in_clickhouse(self, cash):
         query = self.SQL_CREATE_RECORD.format(
             data=", ".join([f"('{i.user_id}', '{i.movie_id}', {i.viewed_frame})" for i in cash])
         )
-        print(query)
         self.clickhouse.execute(query)

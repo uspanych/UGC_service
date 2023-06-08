@@ -36,6 +36,7 @@ def etl_clickhouse() -> None:
     clickhouse_loader = ClickHouseLoader(
         consumer=KafkaConsumer(
             settings.TOPIC,
+            enable_auto_commit=False,
             bootstrap_servers=settings.KAFKA_BOOTSTRAP_SERVER,
             group_id=settings.GROUP_ID_CLICKHOUSE,
             consumer_timeout_ms=settings.TIMEOUT_CLICKHOUSE * 1000

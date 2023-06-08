@@ -12,6 +12,8 @@ services:
         condition: service_healthy
       kafka-1:
         condition: service_healthy
+      clickhouse-node1:
+        condition: service_healthy
 
   web:
     build: ./src/
@@ -19,13 +21,17 @@ services:
       - .env
     networks:
       - backend
-    ports:
-      - 8000:8000
     depends_on:
       redis:
         condition: service_healthy
       kafka-1:
         condition: service_healthy
+    healthcheck:
+      test: curl --fail http://localhost 8000 || exit -1
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
 
   nginx:
     image: nginx:1.23
@@ -43,8 +49,6 @@ services:
     image: redis:latest
     networks:
       - backend
-    ports:
-      - 6379:6379
     healthcheck:
       test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
       interval: 30s
@@ -64,10 +68,7 @@ services:
       KAFKA_OPTS: "-Dzookeeper.4lw.commands.whitelist=*"
     networks:
       - backend
-    ports:
-      - 22181:2181
-      - 22888:2888
-      - 23888:3888
+
 
   zookeeper-2:
     image: confluentinc/cp-zookeeper:latest
@@ -82,10 +83,7 @@ services:
       KAFKA_OPTS: "-Dzookeeper.4lw.commands.whitelist=*"
     networks:
       - backend
-    ports:
-      - 32181:2181
-      - 32888:2888
-      - 33888:3888
+
 
   zookeeper-3:
     image: confluentinc/cp-zookeeper:latest
@@ -100,10 +98,7 @@ services:
       KAFKA_OPTS: "-Dzookeeper.4lw.commands.whitelist=*"
     networks:
       - backend
-    ports:
-      - 42181:2181
-      - 42888:2888
-      - 43888:3888
+
 
   kafka-1:
     container_name: kafka-1
@@ -112,8 +107,6 @@ services:
       - zookeeper-1
       - zookeeper-2
       - zookeeper-3
-    ports:
-      - 29092:9092
     networks:
       - backend
     environment:
@@ -137,8 +130,6 @@ services:
       - zookeeper-1
       - zookeeper-2
       - zookeeper-3
-    ports:
-      - 39092:9092
     networks:
       - backend
     environment:
@@ -159,9 +150,6 @@ services:
     image: yandex/clickhouse-server:20.4
     container_name: clickhouse-node1
     hostname: clickhouse-node1
-    ports:
-      - "8123:8123"
-      - "9000:9000"
     volumes:
       - ./cluster_configs/node1:/etc/clickhouse-server
     networks:
@@ -170,6 +158,11 @@ services:
       - zookeeper-1
       - zookeeper-2
       - zookeeper-3
+    healthcheck:
+      test: [ 'CMD', 'curl', '-f', 'http://localhost:8123' ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
   clickhouse-node2:
     image: yandex/clickhouse-server:20.4

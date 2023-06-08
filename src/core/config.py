@@ -9,7 +9,6 @@ logging_config.dictConfig(LOGGING)
 from pydantic import BaseSettings, Field, BaseModel
 
 
-
 class Settings(BaseSettings):
     PROJECT_NAME: str = Field(..., env='PROJECT_NAME')
     REDIS_HOST: str = Field(..., env='REDIS_HOST')

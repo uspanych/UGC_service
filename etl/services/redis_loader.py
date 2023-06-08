@@ -3,7 +3,7 @@ from redis import Redis
 
 from core.config import settings
 from models.views import ViewModel
-
+from services.backoff import backoff
 
 class RedisLoader:
     """Класс закгрузки в редис.
@@ -19,6 +19,7 @@ class RedisLoader:
         self.consumer = consumer
         self.redis = redis
 
+    @backoff()
     def get_kafka_data(self, batch_size: int = 1) -> None:
         """Функция выгрузки из Kafka.
 
@@ -45,6 +46,7 @@ class RedisLoader:
 
         self._set_data_redis(batch)
 
+    @backoff()
     def _set_data_redis(self, batch: list[ViewModel]) -> None:
 
         for item in batch:
