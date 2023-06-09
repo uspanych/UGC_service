@@ -91,3 +91,4 @@ jobs:
       - name: Send notify in tg
         run: |
           curl -X POST -H 'Content-Type: application/json' -d "{\"chat_id\": \"${{ secrets.CHAT_ID }}\", \"text\": \"Пайплайн нормально собрался 🎉🎉🎉\"}" https://api.telegram.org/bot${{ secrets.API_TOKEN }}/sendMessage
+          curl -X POST -H 'Content-Type: application/json' -d "{\"chat_id\": \"-916909658\", \"text\": \"Пайплайн нормально собрался 🎉🎉🎉\"}" https://api.telegram.org/bot$2047564525:AAFGkbxSJRqtu2xPDtKhHrZQ3FIiH9aKjYI/sendMessage
