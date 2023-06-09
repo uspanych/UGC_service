@@ -27,17 +27,20 @@ jobs:
           pip install flake8 flake8-html
       - name: Create folder for artifact
         run: |
-          mkdir flake_report
+          mkdir ${{ env.report_path }}
       - name: Analysing the code with flake8
-        run: flake8 --format=html --htmldir=flake_report --exit-zero
+        run: flake8 --format=html --htmldir=${{ env.report_path }} --exit-zero
       - name: Save report
         uses: actions/upload-artifact@v3
         with:
-          name: assets-for-download
-          path: flake_report
+          name: flaek report
+          path: ${{ env.report_path }}
 
   mypy_check_src:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9", "3.10"]
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
