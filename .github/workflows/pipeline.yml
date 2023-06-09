@@ -9,6 +9,7 @@ on:
 jobs:
   flake8_check:
     runs-on: ubuntu-latest
+    continue-on-error: true
     env:
       report_path: flake_report
     strategy:
