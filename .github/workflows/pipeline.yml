@@ -8,27 +8,6 @@ on:
 
 jobs:
 
-  archive-build-artifacts:
-    runs-on: ubuntu-latest
-    steps:
-
-      - name: Step 1 - Create a temporary artifact downloads folder
-        run: mkdir downloads
-        
-      - name: step 2 - Add artifacts to publish to the temp folder
-        run: |
-          cd downloads
-          echo 'alpha'    > alpha.html
-          echo 'bravo'    > bravo.html
-          echo 'charlie'  > charlie.html
-          cd ..
-    
-      - name: Step 3 - Use the Upload Artifact GitHub Action
-        uses: actions/upload-artifact@v2
-        with: 
-          name: assets-for-download
-          path: downloads
-
   flake8_check:
     runs-on: ubuntu-latest
     env:
@@ -48,14 +27,14 @@ jobs:
           pip install flake8 flake8-html
       - name: Create folder for artifact
         run: |
-          mkdir $report_path
+          mkdir flake_report
       - name: Analysing the code with flake8
-        run: flake8 --format=html --htmldir=$report_path --exit-zero
+        run: flake8 --format=html --htmldir=flake_report --exit-zero
       - name: Save report
         uses: actions/upload-artifact@v3
         with:
           name: assets-for-download
-          path: $report_path
+          path: flake_report
 
   mypy_check_src:
     runs-on: ubuntu-latest
