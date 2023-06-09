@@ -33,7 +33,7 @@ jobs:
       - name: Save report
         uses: actions/upload-artifact@v3
         with:
-          name: flaek report
+          name: flake report
           path: ${{ env.report_path }}
 
   mypy_check_src:
@@ -57,6 +57,9 @@ jobs:
   
   mypy_check_etl:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9", "3.10"]
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
