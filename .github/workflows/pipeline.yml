@@ -27,13 +27,18 @@ jobs:
       - name: Create folder for artifact
         run: |
           mkdir $report_path
-      - name: Analysing the code with flake8
-        run: flake8 --format=html --htmldir=$report_path
-      - name: Save report
+      - name: Analysing the code with flake8 and save report
         uses: actions/upload-artifact@v3
+        run: flake8 --format=html --htmldir=$report_path
         with:
           name: assets-for-download
           path: $report_path
+
+      # - name: Save report
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: assets-for-download
+      #     path: $report_path
 
   mypy_check_src:
     runs-on: ubuntu-latest
