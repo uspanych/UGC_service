@@ -31,6 +31,7 @@ jobs:
       - name: Analysing the code with flake8
         run: flake8 --format=html --htmldir=${{ env.report_path }} --exit-zero
       - name: Save report
+        if: always()
         uses: actions/upload-artifact@v3
         with:
           name: flake report
