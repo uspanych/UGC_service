@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     KAFKA_BOOTSTRAP_SERVERS: list = Field(..., env='KAFKA_BOOTSTRAP_SERVERS')
     TOPIC: str = Field(..., env='TOPIC')
     SECRET_KEY: str = Field(..., env='SECRET_KEY')
+    SENTRY_DSN: str = Field(..., env='SENTRY_DSN')
 
     class Config:
         env_file = '.env'
