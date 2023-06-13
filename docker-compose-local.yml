@@ -1,0 +1,228 @@
+version: "3"
+
+services:
+#  test:
+#    build: ./tests/functional/
+#    env_file:
+#      - .env
+#    networks:
+#      - ugc_service
+#    depends_on:
+#      web:
+#        condition: service_healthy
+
+#  etl:
+#    build: ./etl/
+#    env_file:
+#      - .env
+#    networks:
+#      - ugc_service
+#    depends_on:
+#      redis:
+#        condition: service_healthy
+#      kafka-1:
+#        condition: service_healthy
+#      clickhouse-node1:
+#        condition: service_healthy
+
+  web:
+    build: ./src/
+    env_file:
+      - .env
+    networks:
+      - ugc_service
+    depends_on:
+      redis:
+        condition: service_healthy
+      kafka-1:
+        condition: service_healthy
+    environment:
+      SECRET_KEY: /run/secrets/secret_key
+    secrets:
+      - secret_key
+    healthcheck:
+      test: curl --fail http://localhost 8000 || exit -1
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+
+  nginx:
+    image: nginx:1.23
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d/site.conf:/etc/nginx/conf.d/site.conf:ro
+    depends_on:
+      - web
+    ports:
+      - 80:80
+    networks:
+      - ugc_service
+
+  redis:
+    image: redis:latest
+    networks:
+      - ugc_service
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+      interval: 30s
+      timeout: 10s
+      retries: 50
+
+  zookeeper-1:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_SERVER_ID: 1
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_LOG4J_ROOT_LOGLEVEL: INFO
+      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:32888:33888;zookeeper-3:42888:43888
+      KAFKA_OPTS: "-Dzookeeper.4lw.commands.whitelist=*"
+    networks:
+      - ugc_service
+
+
+  zookeeper-2:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_SERVER_ID: 2
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_LOG4J_ROOT_LOGLEVEL: INFO
+      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:32888:33888;zookeeper-3:42888:43888
+      KAFKA_OPTS: "-Dzookeeper.4lw.commands.whitelist=*"
+    networks:
+      - ugc_service
+
+
+  zookeeper-3:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_SERVER_ID: 3
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_LOG4J_ROOT_LOGLEVEL: INFO
+      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:32888:33888;zookeeper-3:42888:43888
+      KAFKA_OPTS: "-Dzookeeper.4lw.commands.whitelist=*"
+    networks:
+      - ugc_service
+
+
+  kafka-1:
+    container_name: kafka-1
+    image: confluentinc/cp-kafka:latest
+    platform: linux/amd64
+    depends_on:
+      - zookeeper-1
+      - zookeeper-2
+      - zookeeper-3
+    networks:
+      - ugc_service
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-1:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    healthcheck:
+      test: nc -z localhost 9092 || exit -1
+      start_period: 15s
+      interval: 5s
+      timeout: 10s
+      retries: 10
+
+#  kafka-2:
+#    container_name: kafka-2
+#    image: confluentinc/cp-kafka:latest
+#    depends_on:
+#      - zookeeper-1
+#      - zookeeper-2
+#      - zookeeper-3
+#    networks:
+#      - ugc_service
+#    environment:
+#      KAFKA_BROKER_ID: 2
+#      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
+#      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-2:9092,PLAINTEXT_HOST://localhost:39092
+#      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+#      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+#      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+#    healthcheck:
+#      test: nc -z localhost 9092 || exit -1
+#      start_period: 15s
+#      interval: 5s
+#      timeout: 10s
+#      retries: 10
+#
+#  clickhouse-node1:
+#    image: yandex/clickhouse-server:20.4
+#    container_name: clickhouse-node1
+#    hostname: clickhouse-node1
+#    volumes:
+#      - ./cluster_configs/node1:/etc/clickhouse-server
+#    networks:
+#      - ugc_service
+#    depends_on:
+#      - zookeeper-1
+#      - zookeeper-2
+#      - zookeeper-3
+#    healthcheck:
+#      test: [ 'CMD', 'curl', '-f', 'http://localhost:8123' ]
+#      interval: 5s
+#      timeout: 3s
+#      retries: 5
+#
+#  clickhouse-node2:
+#    image: yandex/clickhouse-server:20.4
+#    container_name: clickhouse-node2
+#    hostname: clickhouse-node2
+#    networks:
+#      - ugc_service
+#    volumes:
+#      - ./cluster_configs/node2:/etc/clickhouse-server
+#    depends_on:
+#      - zookeeper-1
+#      - zookeeper-2
+#      - zookeeper-3
+#
+#  clickhouse-node3:
+#    image: yandex/clickhouse-server:20.4
+#    container_name: clickhouse-node3
+#    hostname: clickhouse-node3
+#    networks:
+#      - ugc_service
+#    volumes:
+#      - ./cluster_configs/node3:/etc/clickhouse-server
+#    depends_on:
+#      - zookeeper-1
+#      - zookeeper-2
+#      - zookeeper-3
+#
+#  clickhouse-node4:
+#    image: yandex/clickhouse-server:20.4
+#    container_name: clickhouse-node4
+#    hostname: clickhouse-node4
+#    networks:
+#      - ugc_service
+#    volumes:
+#      - ./cluster_configs/node4:/etc/clickhouse-server
+#    depends_on:
+#      - zookeeper-1
+#      - zookeeper-2
+#      - zookeeper-3
+
+networks:
+  ugc_service:
+    name: ugc_service
+    driver: bridge
+
+secrets:
+  secret_key:
+    file: ./${SECRET_KEY}
