@@ -36,13 +36,15 @@ services:
         condition: service_healthy
       kafka-1:
         condition: service_healthy
+    environment:
+      SECRET_KEY: /run/secrets/secret_key
+    secrets:
+      - secret_key
     healthcheck:
       test: curl --fail http://localhost 8000 || exit -1
       interval: 10s
       timeout: 10s
       retries: 10
-    volumes:
-      - ./src:/app/
 
 
   nginx:
@@ -220,3 +222,7 @@ networks:
   ugc_service:
     name: ugc_service
     driver: bridge
+
+secrets:
+  secret_key:
+    file: ./${SECRET_KEY}
