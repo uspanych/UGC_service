@@ -2,9 +2,9 @@ name: Python application
 
 on:
   push:
-    branches: [ "master", "20-cicd" ]
+    branches: [ "master" ]
   pull_request:
-    branches: [ master ] 
+    branches: [ "master" ] 
 
 jobs:
   flake8_check:
