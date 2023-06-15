@@ -1,11 +1,12 @@
 from aiokafka import AIOKafkaProducer
 from fastapi import FastAPI
+from motor.motor_asyncio import AsyncIOMotorClient
 from fastapi.responses import ORJSONResponse
 from redis.asyncio import Redis
 
-from api.v1 import views
+from api.v1 import views, likes, review, bookmarks
 from core.config import settings
-from db import kafka, redis
+from db import kafka, redis, mongo
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -27,6 +28,10 @@ async def startup() -> None:
         bootstrap_servers=settings.KAFKA_BOOTSTRAP_SERVERS
     )
 
+    mongo.client = AsyncIOMotorClient(
+        f'mongodb://{settings.MONGO_HOST}:{settings.MONGO_PORT}'
+    )
+
     await kafka.producer.start()
 
 
@@ -37,3 +42,6 @@ async def shutdown() -> None:
 
 
 app.include_router(views.router, prefix='/api/v1/views', tags=['views'])
+app.include_router(likes.router, prefix='/api/v1/likes', tags=['likes'])
+app.include_router(review.router, prefix='/api/v1/reviews', tags=['reviews'])
+app.include_router(bookmarks.router, prefix='/api/v1/bookmarks', tags=['bookmarks'])

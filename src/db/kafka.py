@@ -1,6 +1,6 @@
 from aiokafka import AIOKafkaProducer
 
-producer: AIOKafkaProducer | None
+producer: AIOKafkaProducer | None = None
 
 
 def get_producer() -> AIOKafkaProducer:

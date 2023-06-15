@@ -16,6 +16,9 @@ class Settings(BaseSettings):
     KAFKA_BOOTSTRAP_SERVERS: list = Field(..., env='KAFKA_BOOTSTRAP_SERVERS')
     TOPIC: str = Field(..., env='TOPIC')
     SECRET_KEY: str = Field(..., env='SECRET_KEY')
+    MONGO_HOST: str = Field(..., env='MONGO_HOST')
+    MONGO_PORT: str = Field(..., env='MONGO_PORT')
+    MONGO_DB: str = Field(..., env='DB_NAME')
 
     class Config:
         env_file = '.env'
