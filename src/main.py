@@ -1,3 +1,5 @@
+import sentry_sdk
+
 from aiokafka import AIOKafkaProducer
 from fastapi import FastAPI
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -7,6 +9,12 @@ from redis.asyncio import Redis
 from api.v1 import views, likes, review, bookmarks
 from core.config import settings
 from db import kafka, redis, mongo
+
+
+sentry_sdk.init(
+    dsn=settings.SENTRY_DSN,
+    traces_sample_rate=1.0,
+)
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -39,6 +47,11 @@ async def startup() -> None:
 async def shutdown() -> None:
     await redis.redis.close()
     await kafka.producer.stop()
+
+
+@app.get("/sentry-debug")
+async def trigger_error():
+    division_by_zero = 1 / 0
 
 
 app.include_router(views.router, prefix='/api/v1/views', tags=['views'])

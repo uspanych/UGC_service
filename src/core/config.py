@@ -19,6 +19,7 @@ class Settings(BaseSettings):
     MONGO_HOST: str = Field(..., env='MONGO_HOST')
     MONGO_PORT: str = Field(..., env='MONGO_PORT')
     MONGO_DB: str = Field(..., env='DB_NAME')
+    SENTRY_DSN: str = Field(..., env='SENTRY_DSN')
 
     class Config:
         env_file = '.env'
