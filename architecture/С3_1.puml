@@ -1,0 +1,48 @@
+@startuml
+== Создание записи о прогрессе просмотра фильмов==
+
+Client -> UGC_Service: Post запрос (key-value)
+activate UGC_Service
+UGC_Service -> Kafka: Сохранение данных в кластер
+Etl --> Kafka: Инициализация Consumer для Redis
+Kafka -> Etl: Получение данных
+Etl -> Redis: Запись данных (key-value)
+activate Etl
+activate Kafka
+activate Redis
+
+== Получение данных о прогрессе просмотра фильмов==
+Client -> UGC_Service: Get запрос (key)
+UGC_Service -> Redis: Запрос записи по ключу (key)
+Redis -> UGC_Service: Значение по ключу
+UGC_Service -> Client: Ответ от сервиса
+deactivate UGC_Service
+
+== Перенос данных в ClickHouse ==
+
+Etl --> Kafka: Инициализация Consumer для ClickHouse
+activate ClickHouse
+Kafka -> Etl: Передача данных
+Etl -> ClickHouse: Запись данных в хранилище
+Analyst -> ClickHouse: Построение запросов для аналитики
+
+== Создание записи о закладках, рецензиях и лайков к фильмам ==
+
+activate MongoDb
+Client -> UGC_Service: Запрос на сохранение данных
+UGC_Service -> MongoDb: Сохранение документа в бд
+UGC_Service -> ELK: Отправка логов в ELK
+activate ELK
+deactivate MongoDb
+
+== Получение закладок, лайков и рецензий ==
+
+Client -> UGC_Service: Запрос на получение данных
+activate MongoDb
+UGC_Service -> MongoDb: Поиск нужного документа
+UGC_Service -> ELK: Отправка логов в ELK
+MongoDb -> UGC_Service: Искомый документ
+UGC_Service -> Client: Ответ от сервиса 
+deactivate MongoDb
+
+@enduml

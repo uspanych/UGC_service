@@ -11,6 +11,9 @@ database RedisToken
 database Kafka
 database ClickHouse
 component ETL
+database MongoDB
+component Sentry
+component ELK
 
 Client -right-> Auth_service: Авторизация, Аутентификация
 Client -down-> Async_api: Поиск фильмов
@@ -21,6 +24,10 @@ Async_api -right-> RedisCache: Кеширование поисковых дан�
 UGC_service -left-> Kafka: Событие - история просмотра фильма
 Elasticsearch <- Async_api
 ETL -> ClickHouse
+UGC_service -down-> ELK: Сбор логов приложения
+UGC_service --> MongoDB: Сохранение рецензий, лайков и закладок к фильму
+UGC_service -up-> Sentry: Отслеживание ошибок
+
 ETL --> Kafka
 @enduml
 
