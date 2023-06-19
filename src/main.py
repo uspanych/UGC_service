@@ -1,7 +1,9 @@
 import sentry_sdk
+import logstash
 
 from aiokafka import AIOKafkaProducer
 from fastapi import FastAPI
+from fastapi.logger import logger
 from motor.motor_asyncio import AsyncIOMotorClient
 from fastapi.responses import ORJSONResponse
 from redis.asyncio import Redis
@@ -9,6 +11,10 @@ from redis.asyncio import Redis
 from api.v1 import views, likes, review, bookmarks
 from core.config import settings
 from db import kafka, redis, mongo
+
+
+logstash_handler = logstash.LogstashHandler('logstash', 5044, version=1)
+logger.addHandler(logstash_handler)
 
 
 sentry_sdk.init(
@@ -49,9 +55,12 @@ async def shutdown() -> None:
     await kafka.producer.stop()
 
 
-@app.get("/sentry-debug")
-async def trigger_error():
-    division_by_zero = 1 / 0
+@app.get("/test")
+async def test():
+    logger.info('Test function!')
+    return {
+        "message": "Hello world!"
+    }
 
 
 app.include_router(views.router, prefix='/api/v1/views', tags=['views'])

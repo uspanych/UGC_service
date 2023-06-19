@@ -11,3 +11,4 @@ fastapi-jwt-auth[asymmetric]==0.5.0
 clickhouse-driver==0.2.6
 motor==3.1.2
 sentry-sdk[fastapi]==1.25.1
+python-logstash==0.4.8
