@@ -1,7 +1,7 @@
 from http import HTTPStatus
 
 from fastapi import APIRouter, Body, Depends
-from fastapi_jwt_auth import AuthJWT
+from async_fastapi_jwt_auth import AuthJWT
 
 from models.views import ViewModel, ViewResponseModel
 from services.utils.token_verify import role_required

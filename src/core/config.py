@@ -1,4 +1,4 @@
-from fastapi_jwt_auth import AuthJWT
+from async_fastapi_jwt_auth import AuthJWT
 from logging import config as logging_config
 from pydantic import BaseSettings, Field, BaseModel
 
