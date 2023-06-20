@@ -72,6 +72,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install mypy
+          python3 -m pip install types-redis
       - name: Check etl
         run: |
           mypy --ignore-missing-imports ./etl
