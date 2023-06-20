@@ -13,7 +13,8 @@ from api.v1 import bookmarks, likes, review, views
 from core.config import settings
 from db import kafka, mongo, redis
 
-logstash_handler = logstash.LogstashHandler('logstash', 5044, version=1)
+
+logstash_handler = logstash.LogstashHandler(settings.LOGSTASH_HOST, settings.LOGSTASH_PORT, version=1)
 logger.addHandler(logstash_handler)
 
 
