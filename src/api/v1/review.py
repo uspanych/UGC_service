@@ -2,6 +2,8 @@ from fastapi import APIRouter, Body, Depends
 from services.review import ReviewService, get_reviews_service
 from models.mongo import ReviewModel
 from typing import List, Optional
+from http import HTTPStatus
+from fastapi.logger import logger
 
 router = APIRouter()
 
@@ -24,6 +26,10 @@ async def get_review(
     response = await review_service.get_reviews_by_query(
         query=query,
     )
+
+    if response is None:
+        logger.info('BAB_REQUEST_ERROR')
+        raise HTTPStatus.BAD_REQUEST
 
     return response
 

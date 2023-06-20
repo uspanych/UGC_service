@@ -3,13 +3,13 @@ from uuid import uuid4
 
 import logstash
 import sentry_sdk
-from aiokafka import AIOKafkaProducer
 from fastapi import FastAPI, Request
 from fastapi.logger import logger
 from fastapi.responses import ORJSONResponse
+
 from api.v1 import bookmarks, likes, review, views
 from core.config import settings
-from services.lifespan import startup, shutdown
+from services.utils.lifespan import startup, shutdown
 
 logstash_handler = logstash.LogstashHandler(settings.LOGSTASH_HOST, settings.LOGSTASH_PORT, version=1)
 logger.addHandler(logstash_handler)
@@ -57,5 +57,4 @@ async def test():
 app.include_router(views.router, prefix='/api/v1/views', tags=['views'])
 app.include_router(likes.router, prefix='/api/v1/likes', tags=['likes'])
 app.include_router(review.router, prefix='/api/v1/reviews', tags=['reviews'])
-app.include_router(
-    bookmarks.router, prefix='/api/v1/bookmarks', tags=['bookmarks'])
+app.include_router(bookmarks.router, prefix='/api/v1/bookmarks', tags=['bookmarks'])
