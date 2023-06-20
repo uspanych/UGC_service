@@ -49,7 +49,7 @@ class KafkaStorage(AbstractStorage):
                 key=kwargs.get('key'),
                 value=kwargs.get('value'),
             )
-        except:
+        except Exception:
             pass
 
 
@@ -176,8 +176,8 @@ class MongoStorage(AbstractStorage):
 class Storage:
     def __init__(
             self,
-            receiver: KafkaStorage = None,
-            sender: RedisCache = None,
+            receiver: KafkaStorage,
+            sender: RedisCache,
     ):
         self.receiver = receiver
         self.sender = sender

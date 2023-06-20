@@ -3,7 +3,6 @@ from threading import Thread
 import vertica_python
 
 
-
 def Average(lst):
     return sum(lst) / len(lst)
 

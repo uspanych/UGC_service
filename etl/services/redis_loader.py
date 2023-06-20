@@ -5,6 +5,7 @@ from core.config import settings
 from models.views import ViewModel
 from services.backoff import backoff
 
+
 class RedisLoader:
     """Класс закгрузки в редис.
 

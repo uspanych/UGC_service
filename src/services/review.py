@@ -14,7 +14,7 @@ class ReviewService(MongoStorage):
 
     async def get_reviews_by_query(
             self,
-            query: dict,
+            query: str | dict,
     ) -> List[ReviewModel]:
         """Метод возвращает список рецензий по фильтру.
 
@@ -81,10 +81,6 @@ class ReviewService(MongoStorage):
             },
             collection='reviews'
         )
-
-
-
-
 
 
 @lru_cache()

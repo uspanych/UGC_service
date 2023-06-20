@@ -60,8 +60,10 @@ async def startup() -> None:
 
 @app.on_event("shutdown")
 async def shutdown() -> None:
-    await redis.redis.close()
-    await kafka.producer.stop()
+    if redis.redis is not None:
+        await redis.redis.close()
+    if kafka.producer is not None:
+        await kafka.producer.stop()
 
 
 @app.get("/test")
