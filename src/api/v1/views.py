@@ -17,10 +17,10 @@ router = APIRouter()
 async def views_set_time(
         views_service: ViewsService = Depends(get_views_service),
         views: ViewModel = Body(...),
-        Authorize: AuthJWT = Depends(),
+        autorize: AuthJWT = Depends(),
 ) -> int:
 
-    role_required(Authorize, ["User", "SuperUser", "Admin"])
+    role_required(autorize, ["User", "SuperUser", "Admin"])
 
     try:
         await views_service.set_data_key(
@@ -40,10 +40,10 @@ async def views_set_time(
 async def views_get_time(
         key: str,
         views_service: ViewsService = Depends(get_views_service),
-        Authorize: AuthJWT = Depends(),
+        autorize: AuthJWT = Depends(),
 ) -> ViewResponseModel:
 
-    role_required(Authorize, ["SuperUser", "Admin", "User"])
+    role_required(autorize, ["SuperUser", "Admin", "User"])
 
     response = await views_service.get_data_key(key)
 
