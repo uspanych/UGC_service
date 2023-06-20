@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from uuid import uuid4
 
 import logstash
@@ -6,14 +7,11 @@ from aiokafka import AIOKafkaProducer
 from fastapi import FastAPI, Request
 from fastapi.logger import logger
 from fastapi.responses import ORJSONResponse
-from motor.motor_asyncio import AsyncIOMotorClient
-from redis.asyncio import Redis
-
 from api.v1 import bookmarks, likes, review, views
 from core.config import settings
-from db import kafka, mongo, redis
+from services.lifespan import startup, shutdown
 
-logstash_handler = logstash.LogstashHandler('logstash', 5044, version=1)
+logstash_handler = logstash.LogstashHandler(settings.LOGSTASH_HOST, settings.LOGSTASH_PORT, version=1)
 logger.addHandler(logstash_handler)
 
 
@@ -22,7 +20,16 @@ sentry_sdk.init(
     traces_sample_rate=1.0,
 )
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await startup()
+    yield
+    await shutdown()
+
+
 app = FastAPI(
+    lifespan=lifespan,
     title=settings.PROJECT_NAME,
     docs_url='/api/openapi',
     openapi_url='/api/openapi.json',
@@ -37,33 +44,6 @@ async def add_process_time_header(request: Request, call_next):
     if request_id is None:
         response.headers["X-Request-Id"] = str(uuid4())
     return response
-
-
-@app.on_event('startup')
-async def startup() -> None:
-    redis.redis = Redis(
-        host=settings.REDIS_HOST,
-        port=settings.REDIS_PORT,
-        decode_responses=True,
-    )
-
-    kafka.producer = AIOKafkaProducer(
-        bootstrap_servers=settings.KAFKA_BOOTSTRAP_SERVERS
-    )
-
-    mongo.client = AsyncIOMotorClient(
-        f'mongodb://{settings.MONGO_HOST}:{settings.MONGO_PORT}'
-    )
-
-    await kafka.producer.start()
-
-
-@app.on_event("shutdown")
-async def shutdown() -> None:
-    if redis.redis is not None:
-        await redis.redis.close()
-    if kafka.producer is not None:
-        await kafka.producer.stop()
 
 
 @app.get("/test")
