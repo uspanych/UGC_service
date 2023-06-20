@@ -29,7 +29,7 @@ class ReviewModel(BaseModel):
     film_id: str
     review: str
     date: datetime = Field(default_factory=datetime.now)
-    like: str = None
+    like: str | None = None
 
 
 class BookmarksModel(BaseModel):

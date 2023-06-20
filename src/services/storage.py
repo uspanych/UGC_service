@@ -176,8 +176,8 @@ class MongoStorage(AbstractStorage):
 class Storage:
     def __init__(
             self,
-            receiver: KafkaStorage = None,
-            sender: RedisCache = None,
+            receiver: KafkaStorage,
+            sender: RedisCache,
     ):
         self.receiver = receiver
         self.sender = sender

@@ -16,7 +16,7 @@ async def get_review(
         review_service: ReviewService = Depends(get_reviews_service),
 ) -> List[ReviewModel]:
 
-    query = {key: value}
+    query: str | dict = {key: value}
 
     if key or value is None:
         query = ''
