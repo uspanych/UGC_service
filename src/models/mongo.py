@@ -1,9 +1,7 @@
 from models.base import BaseOrjsonModel
 from pydantic import Field, BaseModel
 from datetime import datetime
-from uuid import uuid4, UUID
-from .base import PyObjectId
-from bson import ObjectId
+from uuid import uuid4
 
 
 class LikesModel(BaseOrjsonModel):

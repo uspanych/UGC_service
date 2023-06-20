@@ -42,7 +42,7 @@ activate MongoDb
 UGC_Service -> MongoDb: Поиск нужного документа
 UGC_Service -> ELK: Отправка логов в ELK
 MongoDb -> UGC_Service: Искомый документ
-UGC_Service -> Client: Ответ от сервиса 
+UGC_Service -> Client: Ответ от сервиса
 deactivate MongoDb
 
 @enduml
