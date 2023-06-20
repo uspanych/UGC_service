@@ -20,7 +20,7 @@ async def get_document_like(
         query={'film_id': film_id},
     )
     if response is None:
-        raise HTTPStatus.BAD_REQUEST
+        raise HTTPStatus.NOT_FOUND
 
     return response
 
@@ -47,7 +47,7 @@ async def get_avg_like(
 
 @router.put(
     '/like/update',
-    description='Метод обновляет инофрмацию о лайке'
+    description='Метод обновляет информацию о лайке'
 )
 async def update_document_like(
         like_service: LikesService = Depends(get_likes_service),

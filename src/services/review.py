@@ -34,12 +34,7 @@ class ReviewService(MongoStorage):
 
         return [
             ReviewModel(
-                review_id=document.get('review_id'),
-                user_id=document.get('user_id'),
-                film_id=document.get('film_id'),
-                review=document.get('review'),
-                date=document.get('date'),
-                like=document.get('like')
+                **document
             ) for document in reviews_list
         ]
 

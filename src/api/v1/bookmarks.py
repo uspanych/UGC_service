@@ -1,5 +1,3 @@
-from typing import List
-
 from fastapi import APIRouter, Depends
 from fastapi import Body
 
@@ -16,7 +14,7 @@ router = APIRouter()
 async def get_document_bookmarks(
         user_id: str,
         bookmarks_service: BookmarksService = Depends(get_bookmarks_service),
-) -> List[BookmarksModel]:
+) -> list[BookmarksModel]:
 
     response = await bookmarks_service.get_data_by_user(
         query={'user_id': user_id},

@@ -3,9 +3,7 @@ import abc
 from aiokafka import AIOKafkaProducer
 from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel
-from models.mongo import LikesModel
 from redis import Redis
-from typing import Type
 
 
 class AbstractCache(abc.ABC):
