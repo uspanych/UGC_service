@@ -1,7 +1,10 @@
-from fastapi import APIRouter, Body, Depends
 from http import HTTPStatus
-from services.likes import LikesService, get_likes_service
+
+from fastapi import APIRouter, Body, Depends
+from fastapi.logger import logger
+
 from models.mongo import LikesModel, FilmResponseModel, FilmAvgModel
+from services.likes import LikesService, get_likes_service
 
 router = APIRouter()
 
@@ -20,6 +23,7 @@ async def get_document_like(
         query={'film_id': film_id},
     )
     if response is None:
+        logger.info('BAB_REQUEST_ERROR')
         raise HTTPStatus.NOT_FOUND
 
     return response
@@ -40,6 +44,7 @@ async def get_avg_like(
     )
 
     if response is None:
+        logger.info('BAB_REQUEST_ERROR')
         raise HTTPStatus.BAD_REQUEST
 
     return response
