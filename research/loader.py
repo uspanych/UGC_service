@@ -23,13 +23,12 @@ def get_data():
 
 
 def insert_data():
-    client = Client(host='localhost') 
+    ch_client = Client(host='localhost')
     for data in get_data():
         start = time.time()
         query = SQL_CREATE_RECORD.format(data=", ".join([f"({i}, '{j}', {k})" for i, j, k in data]))
-        client.execute(query)
+        ch_client.execute(query)
         print("На вставку одной пачки затрачено: ", time.time() - start)
-
 
 
 def main():
@@ -39,7 +38,6 @@ def main():
     start = time.time()
     insert_data()
     print("Всего затрачено: ", time.time() - start)
-
 
 
 if __name__ == '__main__':

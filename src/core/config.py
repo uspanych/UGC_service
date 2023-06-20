@@ -1,12 +1,11 @@
-from logging import config as logging_config
-
 from fastapi_jwt_auth import AuthJWT
+from logging import config as logging_config
+from pydantic import BaseSettings, Field, BaseModel
 
 from core.logger import LOGGING
 
-logging_config.dictConfig(LOGGING)
 
-from pydantic import BaseSettings, Field, BaseModel
+logging_config.dictConfig(LOGGING)
 
 
 class Settings(BaseSettings):

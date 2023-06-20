@@ -11,5 +11,3 @@ SQL_CREATE_RECORD = """
 INSERT INTO views (user_id, movie_id, viewed_frame)
 {data};
 """
-
-

@@ -27,11 +27,8 @@ async def views_set_time(
             key=views.key,
             value=views.value,
         )
-
         return HTTPStatus.OK
-
-    except:
-
+    except Exception:
         return HTTPStatus.BAD_REQUEST
 
 

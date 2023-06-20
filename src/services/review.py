@@ -83,10 +83,6 @@ class ReviewService(MongoStorage):
         )
 
 
-
-
-
-
 @lru_cache()
 def get_reviews_service(
         client: AsyncIOMotorClient = Depends(get_client),

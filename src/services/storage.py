@@ -49,7 +49,7 @@ class KafkaStorage(AbstractStorage):
                 key=kwargs.get('key'),
                 value=kwargs.get('value'),
             )
-        except:
+        except Exception:
             pass
 
 
