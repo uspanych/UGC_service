@@ -8,3 +8,4 @@ uvloop==0.17.0 ; sys_platform != "win32" and implementation_name == "cpython"
 orjson==3.8.7
 httptools==0.5.0
 clickhouse-driver==0.2.6
+backoff==2.2.1

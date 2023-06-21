@@ -46,14 +46,6 @@ async def add_process_time_header(request: Request, call_next):
     return response
 
 
-@app.get("/test")
-async def test():
-    logger.info('Test function!')
-    return {
-        "message": "Hello world!"
-    }
-
-
 app.include_router(views.router, prefix='/api/v1/views', tags=['views'])
 app.include_router(likes.router, prefix='/api/v1/likes', tags=['likes'])
 app.include_router(review.router, prefix='/api/v1/reviews', tags=['reviews'])

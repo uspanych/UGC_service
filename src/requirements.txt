@@ -12,3 +12,4 @@ clickhouse-driver==0.2.6
 motor==3.1.2
 sentry-sdk[fastapi]==1.25.1
 python-logstash==0.4.8
+backoff==2.2.1
