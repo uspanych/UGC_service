@@ -4,12 +4,12 @@ from fastapi import HTTPException
 from async_fastapi_jwt_auth import AuthJWT
 
 
-def role_required(auth: AuthJWT, roles: list):
+async def role_required(auth: AuthJWT, roles: list):
     try:
-        auth.jwt_required()
+        await auth.jwt_required()
     except Exception:
         raise HTTPException(HTTPStatus.UNAUTHORIZED, "Токен не валиден")
-    role = auth.get_raw_jwt().get("role")
+    role = (await auth.get_raw_jwt()).get("role")
 
     if role not in roles:
         raise HTTPException(HTTPStatus.FORBIDDEN, "Доступ запрещен")

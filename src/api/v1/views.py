@@ -1,6 +1,6 @@
 from http import HTTPStatus
 
-from fastapi import APIRouter, Body, Depends
+from fastapi import APIRouter, Body, Depends, Response, HTTPException
 from async_fastapi_jwt_auth import AuthJWT
 
 from models.views import ViewModel, ViewResponseModel
@@ -21,17 +21,17 @@ async def views_set_time(
         autorize: AuthJWT = Depends(),
 ) -> int:
 
-    role_required(autorize, ["User", "SuperUser", "Admin"])
+    # await role_required(autorize, ["User", "SuperUser", "Admin"])
 
     try:
         await views_service.set_data_key(
             key=views.key,
             value=views.value,
         )
-        return HTTPStatus.OK
+        return Response(status_code=HTTPStatus.OK)
     except Exception as error:
         logger.info(f'Set for base error {error}')
-        return HTTPStatus.BAD_REQUEST
+        raise HTTPException(HTTPStatus.BAD_REQUEST)
 
 
 @router.get(
@@ -43,14 +43,14 @@ async def views_get_time(
         key: str,
         views_service: ViewsService = Depends(get_views_service),
         autorize: AuthJWT = Depends(),
-) -> [ViewResponseModel, HTTPStatus]:
+) -> ViewResponseModel | HTTPStatus:
 
-    role_required(autorize, ["SuperUser", "Admin", "User"])
+    # await role_required(autorize, ["SuperUser", "Admin", "User"])
 
     try:
         response = await views_service.get_data_key(key)
         return response
     except Exception as error:
         logger.info(f'Query for base error {error}')
-        return HTTPStatus.BAD_REQUEST
+        raise HTTPException(HTTPStatus.BAD_REQUEST)
 

@@ -163,3 +163,7 @@ person
 genre
 filmwork
 src_student/
+
+.vscode
+kafka_data
+zookeeper_data
